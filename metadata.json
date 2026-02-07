@@ -1,0 +1,7 @@
+{
+  "name": "Kejah",
+  "description": "A modern house hunting application featuring AI-powered search, property listings, and agent connections.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
