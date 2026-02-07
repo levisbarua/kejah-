@@ -7,6 +7,11 @@ service cloud.firestore {
       allow create: if request.auth != null;
     }
 
+    // Allow only authenticated users to submit a report
+    match /reports/{reportId} {
+      allow create: if request.auth != null;
+    }
+
     // Allow users to read/write their own profile
     match /users/{userId} {
       allow read: if true; 

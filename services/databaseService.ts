@@ -168,10 +168,19 @@ const firestoreService = {
         return { id: ref.id, ...newListing } as Listing;
     },
 
-    reportListing: async (listingId: string, reason: string) => {
+    reportListing: async (listingId: string, reason: string, reporterId: string) => {
         if (!db) throw new Error("DB not initialized");
-        // Placeholder
-        return { id: listingId } as any;
+
+        const reportData = {
+            listingId,
+            reporterId,
+            reason,
+            createdAt: Date.now(),
+            status: 'pending' // pending, reviewed, resolved
+        };
+
+        const ref = await addDoc(collection(db, "reports"), reportData);
+        return { id: ref.id, ...reportData };
     },
 
     addFeedback: async (feedback: FeedbackData) => {

@@ -148,8 +148,9 @@ export const ListingDetails: React.FC = () => {
   };
 
   const handleReportSubmit = async (reason: string, details: string) => {
-    if (!listing) return;
-    await api.db.reportListing(listing.id, `[${reason}] ${details}`);
+    if (!listing || !user) return;
+    await api.db.reportListing(listing.id, `[${reason}] ${details}`, user.uid);
+
     setHasReported(true);
     setShowReportModal(false);
 
@@ -357,8 +358,8 @@ export const ListingDetails: React.FC = () => {
                 <button
                   onClick={handleShare}
                   className={`p-2 rounded-full border transition-all duration-200 relative group ${isCopied
-                      ? 'bg-green-50 border-green-200 text-green-600 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400'
-                      : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300'
+                    ? 'bg-green-50 border-green-200 text-green-600 dark:bg-green-900/30 dark:border-green-800 dark:text-green-400'
+                    : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300'
                     }`}
                   title={isCopied ? "Copied!" : "Share"}
                 >
@@ -372,8 +373,8 @@ export const ListingDetails: React.FC = () => {
                 <button
                   onClick={toggleSave}
                   className={`p-2 rounded-full border transition-all duration-200 ${isSaved
-                      ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 scale-105'
-                      : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
+                    ? 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 scale-105'
+                    : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600'
                     }`}
                   title={isSaved ? "Remove from saved" : "Save property"}
                 >
@@ -460,8 +461,8 @@ export const ListingDetails: React.FC = () => {
                     key={topic}
                     onClick={() => handleLoadInsight(topic)}
                     className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${insightTopic === topic
-                        ? 'bg-brand-600 text-white border-brand-600'
-                        : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                      ? 'bg-brand-600 text-white border-brand-600'
+                      : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                       }`}
                   >
                     {topic.charAt(0).toUpperCase() + topic.slice(1)}
@@ -654,18 +655,34 @@ export const ListingDetails: React.FC = () => {
                 <span className="font-medium text-gray-900 dark:text-white">{new Date(listing.createdAt).toLocaleDateString()}</span>
               </p>
 
-              {/* Report Button */}
-              <button
-                onClick={() => setShowReportModal(true)}
-                disabled={hasReported}
-                className={`mt-6 w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border transition-all duration-200 font-medium text-sm ${hasReported
-                    ? 'bg-gray-100 text-gray-400 border-transparent cursor-not-allowed'
-                    : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:border-red-800 dark:hover:text-red-400 shadow-sm'
-                  }`}
-              >
-                <Flag className="h-4 w-4" />
-                {hasReported ? "Report Received" : "Report this listing"}
-              </button>
+              {/* Report Button Logic - Explicit Separation */}
+              {hasReported ? (
+                <button
+                  disabled
+                  className="mt-6 w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-transparent bg-green-50 text-green-600 font-medium text-sm cursor-not-allowed"
+                >
+                  <Check className="h-4 w-4" />
+                  Report Received
+                </button>
+              ) : (user && user.uid) ? (
+                <button
+                  onClick={() => setShowReportModal(true)}
+                  className="mt-6 w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:border-red-800 dark:hover:text-red-400 shadow-sm transition-all duration-200 font-medium text-sm"
+                >
+                  <Flag className="h-4 w-4" />
+                  Report this listing
+                </button>
+              ) : (
+                <button
+                  disabled
+                  title="You must login to report a listing"
+                  className="mt-6 w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-transparent bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed font-medium text-sm"
+                >
+                  <Flag className="h-4 w-4" />
+                  Login to Report
+                </button>
+              )}
+
             </div>
           </div>
         </div>

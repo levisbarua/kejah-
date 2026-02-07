@@ -367,7 +367,7 @@ export const mockFirestore = {
     return newListing;
   },
 
-  reportListing: async (listingId: string, reason: string) => {
+  reportListing: async (listingId: string, reason: string, reporterId: string) => {
     await new Promise(resolve => setTimeout(resolve, 200)); // Reduced from 600
     const listingIndex = MOCK_LISTINGS.findIndex(l => l.id === listingId);
 
