@@ -149,7 +149,13 @@ export const ListingDetails: React.FC = () => {
 
   const handleReportSubmit = async (reason: string, details: string) => {
     if (!listing || !user) return;
-    await api.db.reportListing(listing.id, `[${reason}] ${details}`, user.uid);
+    await api.db.reportListing(
+      listing.id,
+      `[${reason}] ${details}`,
+      user.uid,
+      user.email || undefined,
+      user.displayName || undefined
+    );
 
     setHasReported(true);
     setShowReportModal(false);
@@ -614,12 +620,23 @@ export const ListingDetails: React.FC = () => {
                 </form>
               ) : (
                 <div className="space-y-4">
-                  <button
-                    onClick={handleContactClick}
-                    className="w-full bg-brand-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-brand-700 transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex justify-center items-center"
-                  >
-                    Contact Agent
-                  </button>
+                  {/* Contact Agent Button - Auth Protected */}
+                  {user && user.uid ? (
+                    <button
+                      onClick={handleContactClick}
+                      className="w-full bg-brand-600 text-white font-bold py-3 px-4 rounded-xl hover:bg-brand-700 transition-colors shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all flex justify-center items-center"
+                    >
+                      Contact Agent
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      title="Please login to contact the agent"
+                      className="w-full bg-gray-100 dark:bg-gray-800 text-gray-400 font-bold py-3 px-4 rounded-xl border-2 border-transparent cursor-not-allowed flex justify-center items-center"
+                    >
+                      Login to Contact Agent
+                    </button>
+                  )}
 
                   {/* WhatsApp Button Integration */}
                   {listingAgent && listingAgent.phoneNumber && (
@@ -629,12 +646,23 @@ export const ListingDetails: React.FC = () => {
                     />
                   )}
 
-                  <button
-                    onClick={() => setShowScheduleModal(true)}
-                    className="w-full bg-white dark:bg-gray-700 text-brand-600 dark:text-brand-400 font-bold py-3 px-4 rounded-xl border-2 border-brand-100 dark:border-brand-900 hover:border-brand-600 dark:hover:border-brand-500 transition-colors"
-                  >
-                    Schedule Tour
-                  </button>
+                  {/* Schedule Tour Button - Auth Protected */}
+                  {user && user.uid ? (
+                    <button
+                      onClick={() => setShowScheduleModal(true)}
+                      className="w-full bg-white dark:bg-gray-700 text-brand-600 dark:text-brand-400 font-bold py-3 px-4 rounded-xl border-2 border-brand-100 dark:border-brand-900 hover:border-brand-600 dark:hover:border-brand-500 transition-colors"
+                    >
+                      Schedule Tour
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      title="Please login to schedule a tour"
+                      className="w-full bg-gray-100 dark:bg-gray-800 text-gray-400 font-bold py-3 px-4 rounded-xl border-2 border-transparent cursor-not-allowed"
+                    >
+                      Login to Schedule Tour
+                    </button>
+                  )}
                 </div>
               )}
             </div>

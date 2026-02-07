@@ -68,8 +68,11 @@ export interface Report {
   id: string;
   listingId: string;
   reporterId: string;
+  reporterEmail?: string;
+  reporterName?: string;
   reason: string;
-  timestamp: number;
+  createdAt: number;
+  status: 'pending' | 'reviewed' | 'resolved';
 }
 
 export interface FeedbackData {
