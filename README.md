@@ -1,6 +1,9 @@
 # Kejah - AI-Powered Real Estate Platform
 
+[![Live Demo](https://img.shields.io/badge/demo-online-green.svg)](https://kejah-web.web.app)
+
 **Kejah** is a modern, AI-driven real estate platform designed to simplify the home-buying and renting experience in Kenya. By leveraging artificial intelligence, we connect users with verified properties, trusted agents, and provide deep insights into neighborhoods.
+
 
 ## 🚀 Key Features
 
